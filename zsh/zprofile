@@ -1,0 +1,17 @@
+# .zprofile — runs once for login shells.
+# Use this for PATH modifications and one-time env setup.
+# Do NOT put aliases, functions, or interactive tooling (nvm, jenv, etc.) here —
+# those belong in .zshrc which runs for every interactive shell.
+
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Maven
+export PATH="/opt/apache-maven-3.9.6/bin:$PATH"
+
+# Python 3.13
+PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:${PATH}"
+export PATH
+
+# JetBrains Toolbox
+export PATH="$PATH:/Users/luke.bosse/Library/Application Support/JetBrains/Toolbox/scripts"

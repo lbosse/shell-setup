@@ -1,0 +1,4 @@
+.claude
+# Never commit secrets
+.secrets
+*.bak
