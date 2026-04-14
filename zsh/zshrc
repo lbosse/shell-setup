@@ -20,4 +20,4 @@ eval "$(jenv init -)"
 alias vi=nvim
 alias vim=nvim
 alias ll='ls -al'
-alias claude="/Users/luke.bosse/.claude/local/claude"
+alias reload-secrets='source ~/.secrets'
