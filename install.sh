@@ -94,6 +94,17 @@ if ! brew list nvm &>/dev/null; then
   echo "  Installing nvm (Node version manager)..."
   brew install nvm
 fi
+# Install Node.js LTS via nvm. nvm is a shell function so it must be sourced
+# before it can be called from this script.
+export NVM_DIR="$HOME/.nvm"
+\. "$(brew --prefix)/opt/nvm/nvm.sh"
+if ! nvm ls --no-colors 2>/dev/null | grep -q "lts/\|$(nvm version-remote --lts)"; then
+  echo "  Installing Node.js LTS via nvm..."
+  nvm install --lts
+  nvm use --lts
+else
+  echo "  Node.js LTS already installed via nvm — skipping."
+fi
 # jenv — manages multiple Java versions and exposes the active one via JAVA_HOME.
 if ! command -v jenv &>/dev/null; then
   echo "  Installing jenv (Java version manager)..."
