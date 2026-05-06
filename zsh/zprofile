@@ -6,8 +6,8 @@
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Claude Code
-export PATH="$HOME/.claude/local:$PATH"
+# Local installs, including Claude Code
+export PATH="$HOME/.local/bin:$PATH"
 
 # Maven
 export PATH="/opt/apache-maven-3.9.6/bin:$PATH"

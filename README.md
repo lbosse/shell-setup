@@ -2,6 +2,13 @@
 
 Personal shell configuration for macOS (zsh + neovim + ghostty).
 
+## Prerequisites
+
+- A terminal emulator of your choice. A `ghostty` config ships with this repo,
+  but any emulator (Terminal.app, iTerm2, Alacritty, etc.) will work.
+- Everything else (Homebrew, git, the tools listed below) is installed by the
+  scripts — a stock macOS install is enough to get started.
+
 ## Structure
 
 ```
@@ -14,10 +21,23 @@ shell-setup/
 ├── ghostty/
 │   └── config      → ~/.config/ghostty/config
 ├── secrets.example → template for ~/.secrets (never committed)
-└── install.sh      → sets up all symlinks
+└── install.sh      → installs tools and sets up all symlinks
+                      (also self-bootstraps brew + git + clone on a fresh Mac)
 ```
 
 ## First-time setup
+
+### Fresh machine (no git, no Homebrew)
+
+Paste this into your terminal — `install.sh` will install Homebrew (which pulls
+in the Xcode Command Line Tools and git), clone this repo to
+`~/code/shell-setup`, and then re-exec itself to finish the install:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/lbosse/shell-setup/main/install.sh)"
+```
+
+### Already have git / repo cloned
 
 ```bash
 # 1. Run the install script
@@ -32,7 +52,19 @@ vim ~/.secrets
 ```
 
 `install.sh` will:
-- Install neovim and ripgrep via Homebrew if not present
+- Install **Homebrew** if not present (its installer also bootstraps the Xcode Command Line Tools, which provide compilers, headers, and a working git)
+- Install the following via Homebrew if not present:
+  - **git** — the Homebrew formula, which stays newer than the CLT-bundled copy
+  - **neovim** — text editor
+  - **ripgrep** — fast recursive grep, used by Telescope's live grep
+  - **gh** — GitHub CLI (PRs, issues, releases from the terminal)
+  - **fd** — modern, faster `find` replacement
+  - **jq** — command-line JSON processor
+  - **nvm** — Node version manager (sourced from `/opt/homebrew/opt/nvm` in `.zshrc`)
+  - **jenv** — Java version manager (switches `JAVA_HOME` per shell/project)
+  - **zellij** — terminal multiplexer (tmux-style sessions, panes, tabs)
+  - **Docker Desktop** (Homebrew cask) — installs the `docker`/`docker compose`/`buildx` CLIs and the daemon; on first install the script launches the app so you can accept the license
+- Install **Claude Code** (Anthropic's official CLI agent) via the upstream installer if not present
 - Symlink each config file to its correct home directory location
 - Back up any existing files it would overwrite (as `*.bak`)
 - Create `~/.secrets` from `secrets.example` if it doesn't exist
@@ -70,8 +102,13 @@ Language servers (Kotlin, Java/jdtls) are installed via Mason on first use — r
 
 ## Adding a new machine
 
+For a fresh macOS install, use the curl one-liner from the
+[Fresh machine](#fresh-machine-no-git-no-homebrew) section above — `install.sh`
+self-bootstraps Homebrew, git, and the clone in one shot. If you already have
+git, you can clone manually instead:
+
 ```bash
-git clone <your-repo-url> ~/code/shell-setup
+git clone https://github.com/lbosse/shell-setup.git ~/code/shell-setup
 bash ~/code/shell-setup/install.sh
 # Then open a new terminal window — .zprofile won't reload until a new login shell starts
 ```
