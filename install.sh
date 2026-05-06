@@ -136,6 +136,11 @@ mkdir -p "$HOME/.config/ghostty"
 link "$REPO/ghostty/config" "$HOME/.config/ghostty/config"
 
 echo ""
+echo "==> Linking zellij config"
+mkdir -p "$HOME/.config/zellij"
+link "$REPO/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
+
+echo ""
 echo "==> Secrets"
 if [ ! -f "$HOME/.secrets" ]; then
   cp "$REPO/secrets.example" "$HOME/.secrets"

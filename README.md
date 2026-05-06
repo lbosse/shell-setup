@@ -9,6 +9,10 @@ Personal shell configuration for macOS (zsh + neovim + ghostty).
 - Everything else (Homebrew, git, the tools listed below) is installed by the
   scripts — a stock macOS install is enough to get started.
 
+> **A note for the dark-theme crowd:** this setup is unapologetically
+> light-themed (ghostty: selenized-light, zellij: solarized-light, et al.).
+> Maybe grab some sunglasses before you fire it up.
+
 ## Structure
 
 ```
@@ -20,6 +24,8 @@ shell-setup/
 │   └── init.lua    → ~/.config/nvim/init.lua
 ├── ghostty/
 │   └── config      → ~/.config/ghostty/config
+├── zellij/
+│   └── config.kdl  → ~/.config/zellij/config.kdl
 ├── secrets.example → template for ~/.secrets (never committed)
 └── install.sh      → installs tools and sets up all symlinks
                       (also self-bootstraps brew + git + clone on a fresh Mac)
