@@ -1,4 +1,10 @@
 // Zellij configuration.
-// solarized-light is a built-in zellij theme; it pairs with the rest of
-// this setup's light theming (ghostty selenized-light, etc.).
+// solarized-light is a built-in zellij theme (bundled in the binary).
 theme "solarized-light"
+
+// Ghostty uses the system font by default, which doesn't include the Nerd Font
+// / powerline glyphs that zellij uses in its status bar (e.g. the arrow
+// separators between segments). Without them those characters render as
+// tofu/boxes, making the bar look broken. simplified_ui replaces them with
+// plain ASCII so the UI renders cleanly without a patched font installed.
+simplified_ui true

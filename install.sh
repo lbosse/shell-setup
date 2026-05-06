@@ -94,6 +94,17 @@ if ! brew list nvm &>/dev/null; then
   echo "  Installing nvm (Node version manager)..."
   brew install nvm
 fi
+# Install Node.js LTS via nvm. nvm is a shell function so it must be sourced
+# before it can be called from this script.
+export NVM_DIR="$HOME/.nvm"
+\. "$(brew --prefix)/opt/nvm/nvm.sh"
+if ! nvm ls 'lts/*' --no-colors 2>/dev/null | grep -qv 'N/A'; then
+  echo "  Installing Node.js LTS via nvm..."
+  nvm install --lts
+  nvm use --lts
+else
+  echo "  Node.js LTS already installed via nvm — skipping."
+fi
 # jenv — manages multiple Java versions and exposes the active one via JAVA_HOME.
 if ! command -v jenv &>/dev/null; then
   echo "  Installing jenv (Java version manager)..."
@@ -118,6 +129,19 @@ fi
 if ! command -v claude &>/dev/null; then
   echo "  Installing Claude Code (Anthropic CLI agent)..."
   curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+echo ""
+echo "==> Installing Oh My Zsh"
+# oh-my-zsh — framework for managing zsh configuration (themes, plugins, helpers).
+# --unattended: skip the "change default shell" prompt.
+# --keep-zshrc: don't overwrite the .zshrc we're about to symlink.
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "  Installing Oh My Zsh..."
+  RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
+    --keep-zshrc
+else
+  echo "  Oh My Zsh already installed — skipping."
 fi
 
 echo ""
