@@ -13,20 +13,36 @@ set -e
 REPO_URL="https://github.com/lbosse/shell-setup.git"
 REPO_DIR="$HOME/code/shell-setup"
 
-# If we're not running from inside a clone (e.g. piped from curl), bootstrap
-# the minimum needed to clone the repo, then hand off to the on-disk copy.
+# Resolve the directory this script is running from. Empty when the script is
+# piped via stdin (e.g. curl ... | bash), which is how we detect cold-start.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd)" || SCRIPT_DIR=""
+
+echo ""
+echo "==> Installing Homebrew"
+# Homebrew — package manager for macOS. Its installer also bootstraps the
+# Xcode Command Line Tools (which provide compilers, headers, and a working git).
+# Run unconditionally before anything else: both the cold-start clone path and
+# the main install path need brew available.
+if ! command -v brew &>/dev/null; then
+  echo "  Installing Homebrew (accept the Xcode CLT GUI prompt if it appears)..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Make brew available in the rest of this script.
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+echo ""
+echo "==> Installing git via Homebrew"
+# git ships with the Xcode CLT, but that copy lags behind upstream. Install
+# the brew formula so we get current git on PATH (homebrew/bin precedes /usr/bin).
+if ! brew list git &>/dev/null; then
+  brew install git
+fi
+
+# If we're not running from inside a clone (e.g. piped from curl), clone the
+# repo now that git is available, then hand off to the on-disk copy.
 if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/zsh/zshrc" ]; then
-  echo "==> Cold-start: bootstrapping Homebrew, git, and cloning the repo"
-  if ! command -v brew &>/dev/null; then
-    echo "  Installing Homebrew (accept the Xcode CLT GUI prompt if it appears)..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-  if ! command -v git &>/dev/null; then
-    echo "  Installing git..."
-    brew install git
-  fi
+  echo ""
+  echo "==> Cold-start: cloning the repo"
   if [ ! -d "$REPO_DIR" ]; then
     echo "  Cloning shell-setup to $REPO_DIR..."
     mkdir -p "$(dirname "$REPO_DIR")"
@@ -47,25 +63,6 @@ link() {
   ln -sf "$src" "$dst"
   echo "  Linked: $dst"
 }
-
-echo ""
-echo "==> Installing Homebrew"
-# Homebrew — package manager for macOS. Its installer also bootstraps the
-# Xcode Command Line Tools (which provide a working git, compilers, headers).
-if ! command -v brew &>/dev/null; then
-  echo "  Installing Homebrew (accept the Xcode CLT GUI prompt if it appears)..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  # Make brew available in the rest of this script.
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
-echo ""
-echo "==> Installing git via Homebrew"
-# git ships with the Xcode CLT, but that copy lags behind upstream. Install
-# the brew formula so we get current git on PATH (homebrew/bin precedes /usr/bin).
-if ! brew list git &>/dev/null; then
-  brew install git
-fi
 
 echo ""
 echo "==> Checking prerequisites"
