@@ -105,16 +105,3 @@ Language servers (Kotlin, Java/jdtls) are installed via Mason on first use — r
 | `<leader>ff`   | Find files    |
 | `<leader>fg`   | Live grep     |
 | `<leader>fb`   | Open buffers  |
-
-## Adding a new machine
-
-For a fresh macOS install, use the curl one-liner from the
-[Fresh machine](#fresh-machine-no-git-no-homebrew) section above — `install.sh`
-self-bootstraps Homebrew, git, and the clone in one shot. If you already have
-git, you can clone manually instead:
-
-```bash
-git clone https://github.com/lbosse/shell-setup.git ~/code/shell-setup
-bash ~/code/shell-setup/install.sh
-# Then open a new terminal window — .zprofile won't reload until a new login shell starts
-```
