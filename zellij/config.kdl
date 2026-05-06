@@ -1,24 +1,10 @@
 // Zellij configuration.
-// Based on the built-in solarized-light palette, but white is overridden from
-// base2 (238 232 213) to base01 (88 110 117). In the solarized scale base2 and
-// base3 (bg) are nearly identical, giving ~1:1 contrast — invisible. base01
-// gives ~6:1 contrast on the cream background and is used throughout zellij's
-// UI for secondary text (help bar, tip body, URLs).
-// simplified_ui avoids powerline glyphs that require a Nerd Font.
-themes {
-    solarized-light {
-        fg 7 54 66
-        bg 253 246 227
-        black 7 54 66
-        red 220 50 47
-        green 133 153 0
-        yellow 181 137 0
-        blue 38 139 210
-        magenta 211 54 130
-        orange 203 75 22
-        cyan 42 161 152
-        white 88 110 117
-    }
-}
+// solarized-light is a built-in zellij theme (bundled in the binary).
 theme "solarized-light"
+
+// Ghostty uses the system font by default, which doesn't include the Nerd Font
+// / powerline glyphs that zellij uses in its status bar (e.g. the arrow
+// separators between segments). Without them those characters render as
+// tofu/boxes, making the bar look broken. simplified_ui replaces them with
+// plain ASCII so the UI renders cleanly without a patched font installed.
 simplified_ui true
