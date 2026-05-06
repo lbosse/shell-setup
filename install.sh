@@ -98,7 +98,7 @@ fi
 # before it can be called from this script.
 export NVM_DIR="$HOME/.nvm"
 \. "$(brew --prefix)/opt/nvm/nvm.sh"
-if ! nvm ls --no-colors 2>/dev/null | grep -q "lts/\|$(nvm version-remote --lts)"; then
+if ! nvm ls 'lts/*' --no-colors 2>/dev/null | grep -qv 'N/A'; then
   echo "  Installing Node.js LTS via nvm..."
   nvm install --lts
   nvm use --lts
@@ -138,8 +138,8 @@ echo "==> Installing Oh My Zsh"
 # --keep-zshrc: don't overwrite the .zshrc we're about to symlink.
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "  Installing Oh My Zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
-    --unattended --keep-zshrc
+  RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
+    --keep-zshrc
 else
   echo "  Oh My Zsh already installed — skipping."
 fi
