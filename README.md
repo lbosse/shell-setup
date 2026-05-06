@@ -21,20 +21,20 @@ shell-setup/
 ├── ghostty/
 │   └── config      → ~/.config/ghostty/config
 ├── secrets.example → template for ~/.secrets (never committed)
-├── bootstrap.sh    → cold-start: installs brew + git, clones repo, runs install.sh
 └── install.sh      → installs tools and sets up all symlinks
+                      (also self-bootstraps brew + git + clone on a fresh Mac)
 ```
 
 ## First-time setup
 
 ### Fresh machine (no git, no Homebrew)
 
-Paste this into your terminal — it installs Homebrew (which pulls in the Xcode
-Command Line Tools and git), clones this repo to `~/code/shell-setup`, and then
-runs `install.sh`:
+Paste this into your terminal — `install.sh` will install Homebrew (which pulls
+in the Xcode Command Line Tools and git), clone this repo to
+`~/code/shell-setup`, and then re-exec itself to finish the install:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/lbosse/shell-setup/main/bootstrap.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/lbosse/shell-setup/main/install.sh)"
 ```
 
 ### Already have git / repo cloned
@@ -63,6 +63,7 @@ vim ~/.secrets
   - **nvm** — Node version manager (sourced from `/opt/homebrew/opt/nvm` in `.zshrc`)
   - **jenv** — Java version manager (switches `JAVA_HOME` per shell/project)
   - **zellij** — terminal multiplexer (tmux-style sessions, panes, tabs)
+  - **Docker Desktop** (Homebrew cask) — installs the `docker`/`docker compose`/`buildx` CLIs and the daemon; on first install the script launches the app so you can accept the license
 - Install **Claude Code** (Anthropic's official CLI agent) via the upstream installer if not present
 - Symlink each config file to its correct home directory location
 - Back up any existing files it would overwrite (as `*.bak`)
@@ -101,9 +102,9 @@ Language servers (Kotlin, Java/jdtls) are installed via Mason on first use — r
 
 ## Adding a new machine
 
-For a fresh macOS install, use the bootstrap one-liner from the
-[Fresh machine](#fresh-machine-no-git-no-homebrew) section above — it handles
-Homebrew, git, the clone, and `install.sh` in one shot. If you already have
+For a fresh macOS install, use the curl one-liner from the
+[Fresh machine](#fresh-machine-no-git-no-homebrew) section above — `install.sh`
+self-bootstraps Homebrew, git, and the clone in one shot. If you already have
 git, you can clone manually instead:
 
 ```bash

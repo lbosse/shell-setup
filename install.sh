@@ -1,10 +1,41 @@
 #!/usr/bin/env bash
-# Sets up symlinks from this repo into your home directory.
-# Run this after cloning the repo or when adding a new machine.
-# Safe to re-run — existing files are backed up, not deleted.
+# Installs tools and symlinks configs from this repo into your home directory.
+# Works two ways:
+#   - On a fresh Mac (no git, no Homebrew, no clone) via curl:
+#       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/lbosse/shell-setup/main/install.sh)"
+#     The script will install Homebrew + git, clone the repo, and re-exec
+#     itself from the cloned copy.
+#   - From an existing clone:
+#       bash ~/code/shell-setup/install.sh
+# Safe to re-run — existing files are backed up, every install is guarded.
 set -e
 
-REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/lbosse/shell-setup.git"
+REPO_DIR="$HOME/code/shell-setup"
+
+# If we're not running from inside a clone (e.g. piped from curl), bootstrap
+# the minimum needed to clone the repo, then hand off to the on-disk copy.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd)" || SCRIPT_DIR=""
+if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/zsh/zshrc" ]; then
+  echo "==> Cold-start: bootstrapping Homebrew, git, and cloning the repo"
+  if ! command -v brew &>/dev/null; then
+    echo "  Installing Homebrew (accept the Xcode CLT GUI prompt if it appears)..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+  if ! command -v git &>/dev/null; then
+    echo "  Installing git..."
+    brew install git
+  fi
+  if [ ! -d "$REPO_DIR" ]; then
+    echo "  Cloning shell-setup to $REPO_DIR..."
+    mkdir -p "$(dirname "$REPO_DIR")"
+    git clone "$REPO_URL" "$REPO_DIR"
+  fi
+  exec bash "$REPO_DIR/install.sh"
+fi
+
+REPO="$SCRIPT_DIR"
 
 link() {
   local src="$1"
@@ -75,6 +106,16 @@ fi
 if ! command -v zellij &>/dev/null; then
   echo "  Installing zellij (terminal multiplexer)..."
   brew install zellij
+fi
+# Docker Desktop — provides the docker / docker compose / buildx CLIs plus the
+# daemon. Installed as a cask (.app in /Applications). Free for personal use;
+# check Docker's pricing if running this on a work machine. On first install we
+# launch the app so the user can accept the license and start the daemon.
+if ! brew list --cask docker &>/dev/null; then
+  echo "  Installing Docker Desktop..."
+  brew install --cask docker
+  echo "  Launching Docker Desktop so you can accept the license..."
+  open -a Docker
 fi
 # Claude Code — Anthropic's official CLI agent for coding tasks.
 if ! command -v claude &>/dev/null; then
