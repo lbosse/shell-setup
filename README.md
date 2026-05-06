@@ -11,7 +11,7 @@ Personal shell configuration for macOS (zsh + neovim + ghostty).
 
 > **A note for the dark-theme crowd:** this setup is unapologetically
 > light-themed (ghostty: selenized-light, zellij: solarized-light, et al.).
-> Maybe grab some sunglasses before you fire it up.
+> Maybe grab some sunglasses before you fire it up ☀️🕶️
 
 ## Structure
 
