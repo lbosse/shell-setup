@@ -121,6 +121,19 @@ if ! command -v claude &>/dev/null; then
 fi
 
 echo ""
+echo "==> Installing Oh My Zsh"
+# oh-my-zsh — framework for managing zsh configuration (themes, plugins, helpers).
+# --unattended: skip the "change default shell" prompt.
+# --keep-zshrc: don't overwrite the .zshrc we're about to symlink.
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "  Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
+    --unattended --keep-zshrc
+else
+  echo "  Oh My Zsh already installed — skipping."
+fi
+
+echo ""
 echo "==> Linking zsh config"
 link "$REPO/zsh/zshrc"    "$HOME/.zshrc"
 link "$REPO/zsh/zprofile" "$HOME/.zprofile"

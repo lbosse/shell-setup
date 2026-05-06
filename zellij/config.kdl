@@ -1,4 +1,20 @@
 // Zellij configuration.
-// solarized-light is a built-in zellij theme; it pairs with the rest of
-// this setup's light theming (ghostty selenized-light, etc.).
+// solarized-light colors are defined inline because zellij has no built-in
+// named themes — referencing an undefined name silently falls back to the
+// default dark theme, making text invisible on a light terminal background.
+themes {
+    solarized-light {
+        fg 101 123 131
+        bg 253 246 227
+        black 7 54 66
+        red 220 50 47
+        green 133 153 0
+        yellow 181 137 0
+        blue 38 139 210
+        magenta 211 54 130
+        cyan 42 161 152
+        white 238 232 213
+        orange 203 75 22
+    }
+}
 theme "solarized-light"
