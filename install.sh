@@ -110,6 +110,18 @@ if ! command -v jenv &>/dev/null; then
   echo "  Installing jenv (Java version manager)..."
   brew install jenv
 fi
+# awscli — official AWS command-line interface for managing AWS services.
+if ! command -v aws &>/dev/null; then
+  echo "  Installing AWS CLI..."
+  brew install awscli
+fi
+# google-cloud-sdk — gcloud CLI plus bundled tools (gsutil, bq, etc.).
+# Installed as a cask so it uses Google's versioned tarball rather than
+# a community-maintained formula.
+if ! brew list --cask google-cloud-sdk &>/dev/null; then
+  echo "  Installing Google Cloud SDK..."
+  brew install --cask google-cloud-sdk
+fi
 # zellij — terminal multiplexer (tmux-like) with a friendlier default UX.
 if ! command -v zellij &>/dev/null; then
   echo "  Installing zellij (terminal multiplexer)..."
