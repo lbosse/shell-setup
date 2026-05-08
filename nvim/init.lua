@@ -20,13 +20,7 @@ vim.opt.scrolloff = 8               -- keep 8 lines visible above/below cursor
 -- Re-check file on focus or buffer enter (same as your autocmd)
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, { command = "checktime" })
 
--- Use the terminal's own background color instead of nvim's theme background
-local function clear_background()
-  vim.api.nvim_set_hl(0, "Normal",   { bg = "none" })
-  vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-end
-clear_background()  -- apply immediately on startup
-vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", callback = clear_background })
+vim.o.background = "light"
 
 -- =============================================================
 -- Bootstrap lazy.nvim (plugin manager — installs itself on first run)
@@ -45,6 +39,20 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugins
 -- =============================================================
 require("lazy").setup({
+
+  -- ----------------------------------------------------------
+  -- Colorscheme — Solarized/Selenized (matches ghostty's selenized-light).
+  -- Loaded eagerly with high priority so it's applied before other plugins.
+  -- ----------------------------------------------------------
+  {
+    "maxmx03/solarized.nvim",
+    lazy     = false,
+    priority = 1000,
+    config   = function()
+      require("solarized").setup({ palette = "selenized" })
+      vim.cmd.colorscheme("solarized")
+    end,
+  },
 
   -- ----------------------------------------------------------
   -- Syntax highlighting via Tree-sitter
