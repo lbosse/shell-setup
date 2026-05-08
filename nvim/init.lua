@@ -59,6 +59,7 @@ require("lazy").setup({
       require("nvim-treesitter.config").setup({
         ensure_installed = {
           "kotlin", "java",           -- your primary languages
+          "python",                   -- Python
           "lua", "bash",              -- config/scripting
           "json", "yaml", "xml",      -- Spring Boot config files
           "markdown", "markdown_inline",
@@ -90,6 +91,8 @@ require("lazy").setup({
         ensure_installed = {
           "kotlin_language_server",   -- Kotlin LSP
           "jdtls",                    -- Java (Eclipse JDT)
+          "pyright",                  -- Python type-checking LSP
+          "ruff",                     -- Python linter / formatter
         },
         automatic_installation = true,
       })
@@ -187,6 +190,20 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
     vim.lsp.config("*", { capabilities = capabilities })  -- apply to all servers
-    vim.lsp.enable({ "kotlin_language_server", "jdtls" })
+    vim.lsp.enable({ "kotlin_language_server", "jdtls", "pyright" })
+
+    -- Ruff: disable hover (pyright handles docs) and enable format-on-save
+    vim.lsp.config("ruff", {
+      on_attach = function(client, bufnr)
+        client.server_capabilities.hoverProvider = false
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          buffer  = bufnr,
+          callback = function()
+            vim.lsp.buf.format({ async = false })
+          end,
+        })
+      end,
+    })
+    vim.lsp.enable({ "ruff" })
   end,
 })
