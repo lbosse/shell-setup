@@ -60,7 +60,7 @@ vim ~/.secrets
 `install.sh` will:
 - Install **Homebrew** if not present (its installer also bootstraps the Xcode Command Line Tools, which provide compilers, headers, and a working git)
 - Install the following via Homebrew if not present:
-  - **git** — the Homebrew formula, which stays newer than the CLT-bundled copy
+  - **git** — only if not already on PATH (any existing git from Xcode CLT, brew, or a manual install is left in place)
   - **neovim** — text editor
   - **ripgrep** — fast recursive grep, used by Telescope's live grep
   - **gh** — GitHub CLI (PRs, issues, releases from the terminal)
