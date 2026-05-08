@@ -31,10 +31,12 @@ if ! command -v brew &>/dev/null; then
 fi
 
 echo ""
-echo "==> Installing git via Homebrew"
-# git ships with the Xcode CLT, but that copy lags behind upstream. Install
-# the brew formula so we get current git on PATH (homebrew/bin precedes /usr/bin).
-if ! brew list git &>/dev/null; then
+echo "==> Ensuring git is available"
+# Use whatever git is already on PATH (Xcode CLT, manual install, brew, etc.).
+# Only fall back to a brew install if git is missing entirely. We previously
+# checked `brew list git` here, which forced a brew install whenever git came
+# from elsewhere — and broke for users with a non-brew git.
+if ! command -v git &>/dev/null; then
   brew install git
 fi
 
