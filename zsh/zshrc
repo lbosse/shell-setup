@@ -4,13 +4,20 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
-# nvm
+# nvm — nvm.sh lives under Homebrew on macOS but in ~/.nvm for the upstream
+# install used on Linux/WSL. Try the brew path first, then fall back.
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+  \. "/opt/homebrew/opt/nvm/nvm.sh"
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+elif [ -s "$NVM_DIR/nvm.sh" ]; then
+  \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
 
-# jenv
-eval "$(jenv init -)"
+# jenv — only initialize if it's actually on PATH (zprofile adds ~/.jenv/bin
+# when jenv was installed from git, as it is on Linux).
+command -v jenv >/dev/null 2>&1 && eval "$(jenv init -)"
 
 # Secrets — stored in ~/.secrets (not tracked in git)
 # See secrets.example in this repo for the template.
@@ -21,3 +28,14 @@ alias vi=nvim
 alias vim=nvim
 alias ll='ls -al'
 alias reload-secrets='source ~/.secrets'
+
+# TODO: MAKE WINDOWS PLATFORM SPECIFIC
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+NPIPERELAY="/mnt/c/Users/LukeBosse/go/bin/npiperelay.exe"
+
+# (re)start the relay if it isn't already running
+if ! pgrep -f "npiperelay.exe -ei -s //./pipe/openssh-ssh-agent" >/dev/null; then
+    rm -f "$SSH_AUTH_SOCK"
+    (setsid socat UNIX-LISTEN:"$SSH_AUTH_SOCK",fork \
+        EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork &) >/dev/null 2>&1
+fi
