@@ -3,18 +3,33 @@
 # Do NOT put aliases, functions, or interactive tooling (nvm, jenv, etc.) here —
 # those belong in .zshrc which runs for every interactive shell.
 
-# Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (macOS only) — run first so the PATH entries prepended below sit
+# ahead of brew's, matching the original ordering.
+if [ "$(uname -s)" = "Darwin" ]; then
+  [ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-# Local installs, including Claude Code
+# Local installs, including Claude Code, AWS CLI v2, zellij, and the fd shim.
+# Shared across platforms.
 export PATH="$HOME/.local/bin:$PATH"
 
-# Maven
-export PATH="/opt/apache-maven-3.9.6/bin:$PATH"
+# jenv — on Linux it's installed from git into ~/.jenv; put its bin on PATH so
+# `jenv init` in .zshrc can find it. (On macOS brew already handles this.)
+[ -d "$HOME/.jenv/bin" ] && export PATH="$HOME/.jenv/bin:$PATH"
 
-# Python 3.13
-PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:${PATH}"
-export PATH
+if [ "$(uname -s)" = "Darwin" ]; then
+  # Maven
+  export PATH="/opt/apache-maven-3.9.6/bin:$PATH"
 
-# JetBrains Toolbox
-export PATH="$PATH:/Users/luke.bosse/Library/Application Support/JetBrains/Toolbox/scripts"
+  # Python 3.13
+  PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:${PATH}"
+  export PATH
+
+  # JetBrains Toolbox
+  export PATH="$PATH:/Users/luke.bosse/Library/Application Support/JetBrains/Toolbox/scripts"
+else
+  # Google Cloud SDK — installed under $HOME on Linux/WSL; source its PATH and
+  # completion shims if present.
+  [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ] && \. "$HOME/google-cloud-sdk/path.zsh.inc"
+  [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && \. "$HOME/google-cloud-sdk/completion.zsh.inc"
+fi
